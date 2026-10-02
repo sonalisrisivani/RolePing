@@ -1,11 +1,10 @@
 # What you need to do
 
-I created the **Role Ping** Supabase project in the `inavis` organization (Mumbai), applied the profile migration, and configured the local app with its publishable key. You do not need to create a project, copy keys, or run SQL.
+The **Role Ping** Supabase project is connected, its migrations are applied, and you confirmed email sign-in works. No immediate setup is required from you.
 
-To finish testing email sign-in:
+For a full profile check when convenient:
 
-1. In the [Role Ping Auth URL settings](https://supabase.com/dashboard/project/bqsjlmftpxawctenzvja/auth/url-configuration), add `http://127.0.0.1:5173/` to the redirect URL allow list. Check that email sign-in is enabled in Auth providers.
-2. Open [the local app](http://127.0.0.1:5173/), enter your own email, and follow the sign-in link. Keep your email link and codes private.
-3. Tell me **“Sign-in works”** or send the error text without the link or code.
+1. Open [the local app](http://127.0.0.1:5173/) while signed in. Fill the required role, location, and unknown-value choices, then save.
+2. Refresh the page and confirm the values remain. Tell me if an error appears, without sharing a sign-in link or code.
 
-I can build the next local features while you do this. I can verify the database policies and schema through the connected Supabase plugin; end-to-end email sign-in needs a test inbox. Later notification delivery will require a provider account and consent wording, after the matching flow works.
+I can continue local and database development while you do this. A true two-account isolation check will need a second test account later. Notification delivery will eventually need a provider account and consent wording, after matching works.
