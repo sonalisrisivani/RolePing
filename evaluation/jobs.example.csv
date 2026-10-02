@@ -1,0 +1,2 @@
+job_id,source_id,source_url,employer,role_title,observed_at,run_outcome
+example-01,example-board,https://example.com/jobs/1,Example Employer,Software Intern,2026-10-02T00:00:00Z,success

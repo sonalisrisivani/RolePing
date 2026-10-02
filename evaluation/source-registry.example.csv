@@ -1,0 +1,2 @@
+source_id,adapter,board_id,employer,relevance,access_conditions,permitted_use,expected_shape,cadence,verified_at,last_run_outcome,notes
+example-board,employer-feed,replace-with-verified-board-id,Example Employer,unassessed,unverified,unverified,unverified,unset,,,Template only; do not enable before verification
