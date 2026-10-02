@@ -9,6 +9,7 @@ function App() {
   const [loading, setLoading] = useState(Boolean(supabase))
   const [profileLoading, setProfileLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [authSending, setAuthSending] = useState(false)
   const [linkRequested, setLinkRequested] = useState(false)
   const [emailLimited, setEmailLimited] = useState(false)
@@ -49,6 +50,22 @@ function App() {
       })
     return () => { active = false }
   }, [session])
+
+  async function signInWithPassword(event) {
+    event.preventDefault()
+    if (authSending) return
+    setAuthSending(true)
+    setMessage('')
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (error) setMessage(error.message)
+      else setPassword('')
+    } catch (error) {
+      setMessage(error.message || 'Could not sign in. Please try again.')
+    } finally {
+      setAuthSending(false)
+    }
+  }
 
   async function signIn(event) {
     event.preventDefault()
@@ -96,7 +113,13 @@ function App() {
     <div className="content">
       {preview && <p className="notice">Local preview: settings stay in this browser. Signed-in settings are saved to Supabase.</p>}
       {loading ? <p>Checking your session…</p> : !preview && !session ? <section className="card auth">
-        <h1>Sign in</h1><p>Enter your email to receive a sign-in link.</p>
+        <h1>Sign in</h1><p>Use your email and password to sign in.</p>
+        <form onSubmit={signInWithPassword}>
+          <label>Email address<input type="email" autoComplete="username" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"/></label>
+          <label>Password<input type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)}/></label>
+          <button disabled={authSending}>{authSending ? 'Signing in…' : 'Sign in'}</button>
+        </form>
+        <p>Or receive a sign-in link by email.</p>
         {!linkRequested && !emailLimited && <form onSubmit={signIn}><label>Email address<input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"/></label><button disabled={authSending}>{authSending ? 'Sending…' : 'Send sign-in link'}</button></form>}
       </section> : <>
         <div className="intro"><div><h1>Job preferences</h1><p>Set your search and delivery choices. Job collection and notifications are still being built.</p></div>{session && <button className="secondary" onClick={() => supabase.auth.signOut()}>Sign out</button>}</div>

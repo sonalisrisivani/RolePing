@@ -9,3 +9,7 @@ Database preference save/reload and two-identity isolation checks now pass autom
 Notification delivery will eventually need a provider account and consent wording, after matching works.
 
 The first job collector is built and verified with 21 live Razorpay postings. It can run through the already-authenticated Supabase CLI, so no database password is needed from you for manual development runs. Scheduling and a dedicated worker credential remain later work.
+
+## Password login for browser testing
+
+The sign-in screen now accepts an email and password as well as email links. A separate confirmed test account was created through Supabase Auth; its credentials are in the ignored local file `tmp/test-login.txt`. Password login passed a live Auth API check. Credentials are not committed, and no password column was added to profiles. Browser login and save/refresh verification remain pending.
