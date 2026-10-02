@@ -9,6 +9,9 @@ function App() {
   const [loading, setLoading] = useState(Boolean(supabase))
   const [profileLoading, setProfileLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [authSending, setAuthSending] = useState(false)
+  const [linkRequested, setLinkRequested] = useState(false)
+  const [emailLimited, setEmailLimited] = useState(false)
   const [profile, setProfile] = useState(defaultPreferences)
   const [message, setMessage] = useState('')
   const [saving, setSaving] = useState(false)
@@ -49,9 +52,25 @@ function App() {
 
   async function signIn(event) {
     event.preventDefault()
+    if (authSending || linkRequested || emailLimited) return
+    setAuthSending(true)
     setMessage('')
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } })
-    setMessage(error ? error.message : 'Check your email for a sign-in link.')
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } })
+      if (error?.code === 'over_email_send_rate_limit' || error?.status === 429) {
+        setEmailLimited(true)
+        setMessage('Email sending is temporarily limited for this project. If you already received a sign-in link, use it in the same browser. Otherwise, wait for the quota to replenish before trying again.')
+      } else if (error) {
+        setMessage(error.message)
+      } else {
+        setLinkRequested(true)
+        setMessage('Check your inbox for a sign-in link. Please use that link instead of requesting another email.')
+      }
+    } catch (error) {
+      setMessage(error.message || 'Could not request a sign-in link.')
+    } finally {
+      setAuthSending(false)
+    }
   }
 
   async function save(event) {
@@ -78,7 +97,7 @@ function App() {
       {preview && <p className="notice">Local preview: settings stay in this browser. Signed-in settings are saved to Supabase.</p>}
       {loading ? <p>Checking your session…</p> : !preview && !session ? <section className="card auth">
         <h1>Sign in</h1><p>Enter your email to receive a sign-in link.</p>
-        <form onSubmit={signIn}><label>Email address<input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"/></label><button>Send sign-in link</button></form>
+        {!linkRequested && !emailLimited && <form onSubmit={signIn}><label>Email address<input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"/></label><button disabled={authSending}>{authSending ? 'Sending…' : 'Send sign-in link'}</button></form>}
       </section> : <>
         <div className="intro"><div><h1>Job preferences</h1><p>Set your search and delivery choices. Job collection and notifications are still being built.</p></div>{session && <button className="secondary" onClick={() => supabase.auth.signOut()}>Sign out</button>}</div>
         {profileLoading ? <p>Loading your settings…</p> : <section className="card"><form onSubmit={save}>
