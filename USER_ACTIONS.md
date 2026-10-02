@@ -12,4 +12,8 @@ The first job collector is built and verified with 21 live Razorpay postings. It
 
 ## Password login for browser testing
 
-The sign-in screen now accepts an email and password as well as email links. A separate confirmed test account was created through Supabase Auth; its credentials are in the ignored local file `tmp/test-login.txt`. Password login passed a live Auth API check. Credentials are not committed, and no password column was added to profiles. Browser login and save/refresh verification remain pending.
+The sign-in screen now accepts an email and password as well as email links. A separate confirmed test account was created through Supabase Auth; its credentials are in the ignored local file `tmp/test-login.txt`. Password login passed a live Auth API check. Credentials are not committed, and no password column was added to profiles. The user confirmed browser login and save/refresh work.
+
+## Browse collected jobs
+
+Refresh the local app and choose **Jobs** after signing in. The page lists collected postings and links to the employer application pages. Preference matching comes in the next slice.

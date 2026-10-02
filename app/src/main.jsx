@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { supabase } from './supabase'
 import { defaultPreferences, profileRecord, readPreferences, validatePreferences } from './preferences'
 import './style.css'
+import Jobs from './Jobs'
 
 function App() {
+  const [page, setPage] = useState('preferences')
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(Boolean(supabase))
   const [profileLoading, setProfileLoading] = useState(false)
@@ -122,7 +124,9 @@ function App() {
         <p>Or receive a sign-in link by email.</p>
         {!linkRequested && !emailLimited && <form onSubmit={signIn}><label>Email address<input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"/></label><button disabled={authSending}>{authSending ? 'Sending…' : 'Send sign-in link'}</button></form>}
       </section> : <>
-        <div className="intro"><div><h1>Job preferences</h1><p>Set your search and delivery choices. Job collection and notifications are still being built.</p></div>{session && <button className="secondary" onClick={() => supabase.auth.signOut()}>Sign out</button>}</div>
+        {session && <nav className="page-nav" aria-label="Main navigation"><button className="secondary" aria-pressed={page === 'preferences'} onClick={() => setPage('preferences')}>Preferences</button><button className="secondary" aria-pressed={page === 'jobs'} onClick={() => setPage('jobs')}>Jobs</button><button className="secondary" onClick={() => supabase.auth.signOut()}>Sign out</button></nav>}
+        <div hidden={page !== 'preferences'}>
+        <div className="intro"><div><h1>Job preferences</h1><p>Set your search and delivery choices. Notifications are not active yet.</p></div></div>
         {profileLoading ? <p>Loading your settings…</p> : <section className="card"><form onSubmit={save}>
           <h2>Search</h2><div className="grid">
             <label>Your name<input maxLength="120" value={profile.full_name} onChange={e => setField('full_name', e.target.value)} placeholder="Your name"/></label>
@@ -145,6 +149,8 @@ function App() {
           <label className="pause"><input type="checkbox" checked={profile.paused} onChange={e => setField('paused', e.target.checked)}/><span>Pause future notifications <small>Delivery is not active yet.</small></span></label>
           <div className="actions"><button disabled={saving}>{saving ? 'Saving…' : 'Save settings'}</button></div>
         </form></section>}
+        </div>
+        {session && page === 'jobs' && <Jobs />}
       </>}
       {message && <p className="message" role="status">{message}</p>}
     </div>
