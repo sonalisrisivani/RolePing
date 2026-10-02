@@ -1,0 +1,212 @@
+ROLEPING — SOURCE AND FILTER COVERAGE
+Reviewed: 2 October 2026
+Scope: implemented code and the saved 21-job API sample, not assumed platform capabilities.
+
+1. WHY SOME PROFILE FIELDS DO NOT WORK AS FILTERS
+
+We added some preferences ahead of the data extraction needed to use them.
+That was premature: a saved preference is not necessarily a working filter.
+The screen should make this distinction explicit.
+
+Working comparisons today: target role terms against job titles; preferred
+location phrases against the main job location. Both support Any.
+
+Policy controls today: include/exclude jobs whose salary or eligibility is
+unknown. These policies work, but do not verify salary or eligibility.
+
+Stored only today: minimum salary, currency, salary period, your experience,
+skills, work mode, and employment type. They do NOT exclude mismatching jobs.
+Matching cards show caveats for these unverified preferences.
+
+Proposed correction, not implemented by this document:
+- Keep working comparisons in the active filter section.
+- Hide or clearly label stored-only fields as "Not used for filtering yet".
+- Explain unknown-data policies separately from verified comparisons.
+- Do not imply that a displayed match meets salary, skill or experience needs.
+
+2. SOURCES CONNECTED TODAY
+
+Only one source adapter is implemented: Greenhouse Job Board API.
+Only one employer board is configured: Razorpay.
+Greenhouse is the recruiting platform; Razorpay is the employer feed on it.
+We are not searching all employers that use Greenhouse.
+No other job platform is connected in the current configuration.
+Supabase stores application data; it is not a job-listing source.
+
+3. GREENHOUSE — RAZORPAY BOARD
+
+Endpoint:
+https://boards-api.greenhouse.io/v1/boards/razorpaysoftwareprivatelimited/jobs?content=true
+
+Evidence files (local, ignored by Git):
+- tmp/api-samples/greenhouse-response.json — complete saved response, 21 jobs.
+- tmp/api-samples/one-job.json — one complete job, including HTML content.
+
+A. Profile field -> source field -> actual behavior
+
+Target roles
+  Source: title.
+  Active comparison: every whole token of one comma-separated role alternative
+  must occur in the title, ignoring case and normalizing certain separators.
+  Example: "Software Engineer" can match "Software Development Engineer".
+  Any bypasses this comparison. No synonym, description, skill or seniority
+  matching is implemented. Similar job titles can be missed.
+
+Preferred locations
+  Source: location.name, normalized into location_text / job_cards.location.
+  Active comparison: one comma-separated location phrase must occur with word
+  boundaries. Any bypasses this comparison, including for missing locations.
+  No city aliases, distance, relocation, country eligibility or geographic
+  hierarchy is checked. "Bangalore" is not equated with "Bengaluru".
+  "Remote" only matches text; it does not establish worldwide eligibility.
+
+Minimum salary + currency + salary period
+  No dedicated salary amount, currency or pay-period field in this sample.
+  These preferences are saved, but no numerical salary comparison is performed.
+  A salary may be stated in content; description extraction is not implemented.
+  No conversion, annualization, range comparison or compensation estimate occurs.
+
+When salary is not listed
+  This is an active UNKNOWN-DATA policy, not a salary comparison.
+  Every imported job is currently treated as salary unknown.
+  "Show with a caveat" allows it; "Exclude" removes it from Matching jobs.
+  This remains true even if a description happens to contain salary information,
+  because our code does not yet extract it.
+
+Your years of experience
+  No dedicated experience requirement field in this sample.
+  Candidate experience is saved; zero and fractional years are supported.
+  No requirement extraction or comparison is performed. A user with zero years
+  may still see a senior role if its title/location pass the working filters.
+
+Skills / Any skills
+  No dedicated skills array in this sample.
+  Candidate skills are saved as text. No description keyword matching, skill
+  extraction or required-versus-preferred skill comparison is implemented.
+  Any indicates no skill preference. Specific skills currently do not narrow
+  results either; matching cards disclose that they were not used to exclude jobs.
+
+Role type (Any / Full-time / Internship)
+  No verified employment-type mapping exists in our importer.
+  The sample's employment field contains "employment_required" on all 21 jobs.
+  We have NOT established this as full-time, internship or contract information;
+  it must not be mapped to those choices without verifying its meaning.
+  The preference is saved only. Descriptions may provide evidence later.
+
+Work mode (Any / Remote / Hybrid / On-site)
+  No dedicated work-mode field is normalized by the importer.
+  It is saved only; it does not currently constrain matching.
+  Location text alone is insufficient to verify hybrid schedules or remote rules.
+
+When eligibility is unconfirmed
+  This is an active UNKNOWN-DATA policy, not an eligibility verification engine.
+  No degree, graduation batch, authorization or comparable eligibility facts have
+  been extracted. The profile also lacks those candidate details.
+  "Confirmed only" therefore removes every current job from Matching jobs.
+  "Show with a caveat" allows unknown eligibility, subject to title/location.
+
+Your name
+  Profile information only. Never used to decide job relevance.
+
+Digest time, timezone, pause notifications
+  Delivery preferences, not job-comparison factors. Delivery is not implemented.
+  Pause does not hide jobs or change matching results.
+
+B. Missing or not yet usable
+
+Absent as dedicated fields in this saved response:
+- Salary amount/range, currency and pay period.
+- Required years of experience and structured required/preferred skills.
+- Explicit work-mode and usable full-time/internship classification.
+- Structured degree, graduation batch and work-authorization requirements.
+
+Present but empty in all 21 sampled records:
+- application_deadline.
+- ai_disclaimer, include_ai_disclaimer, ai_opt_out_request_url.
+- offices[].location is null in the observed office entries.
+
+Potentially in descriptions, but NOT extracted or verified:
+- Experience, skills, compensation, employment type, work mode and eligibility.
+Absence of a structured key does not prove absence from the description.
+These findings apply to this board/sample, not every Greenhouse employer.
+
+C. Extra available fields that could support future filters or better results
+
+company_name — populated on 21/21 records.
+  Could support employer include/exclude preferences with more sources.
+  Current card company comes from our configured source registry instead.
+
+departments[].name and department IDs/hierarchy — populated on 21/21 records.
+  Could support job-function filters (e.g. Backend, DevOps, Finance).
+  Not currently compared. Department names are not proof of a candidate's skills.
+
+offices[].name — populated on 21/21 records.
+  Could support business-unit filters (e.g. RazorpayX, Payments, Curlec).
+  In this sample these labels must not be treated as physical office locations.
+
+metadata[] — populated on 21/21 records, including employer-defined locations.
+  Could support additional locations AFTER resolving conflicting values.
+  Concrete conflict: sample job 4736141005 has location.name = Bengaluru and
+  "Job Location ( Base Location )" = Mumbai. Current matching uses Bengaluru
+  only; no conflict warning is currently shown to the user.
+
+first_published — populated on 21/21 records.
+  Could support posted-since filters. Not currently normalized or filtered.
+
+updated_at — populated on 21/21 records; saved as source_updated_at.
+  Could support source-change tracking. An update is not a new publication.
+
+language — "en" on 21/21 records.
+  Could support posting-language preferences. It is not a candidate language
+  proficiency requirement and is not currently compared.
+
+application_deadline — key exists, but all sampled values are null.
+  Could support deadline filters only when a future source actually supplies it.
+
+content — populated on 21/21 records as HTML/entity-encoded description text.
+  Potential evidence for skills/experience/salary extraction, not yet an active
+  matching input. Must decode and parse safely, distinguish required/preferred
+  wording, and retain evidence rather than guessing missing values.
+
+absolute_url — populated on 21/21 records; used for the Apply link.
+id — used with source identity to avoid duplicate imports.
+internal_job_id and requisition_id — possible investigation/deduplication aids;
+  not candidate filters and not sufficient to merge jobs across employers.
+data_compliance — application/privacy metadata, not candidate fit information.
+
+D. Collection, freshness and ranking limitations
+
+- Collection is manual; there is no automatic polling schedule yet.
+- Repeated imports update the same source posting rather than duplicating it.
+- Only a complete successful response closes missing jobs; partial failures do not.
+- Closed jobs and disabled sources are hidden by database access policies.
+- Matching sorts by last_seen_at, then title and ID. last_seen_at is OUR collection
+  time, not the publication date and not a relevance score. One batch often has
+  the same collection time, so ordering within it is effectively alphabetical.
+- No maximum evidence age is enforced; stale evidence may remain visible until
+  the next successful collection. Employer-page availability is not guaranteed.
+- All jobs intentionally bypasses profile matching, but still hides closed jobs
+  and disabled sources. Unknown-data policies apply only to Matching jobs.
+
+4. PRIORITIES TO DISCUSS NEXT (PROPOSALS, NOT IMPLEMENTED)
+
+1. Make inactive filter labels honest, especially salary, type and work mode.
+2. Resolve location conflicts and add tested city aliases.
+3. Add relevant employer boards to improve coverage beyond 21 Razorpay jobs.
+4. Extract explicit requirements from descriptions with evidence and confidence.
+5. Compare experience/skills/salary only when comparable facts are available;
+   preserve unknowns and explain why each job passes or fails.
+6. Add useful structured filters such as department and publication date.
+7. Measure matching quality before introducing ranking scores or strict defaults.
+
+5. IMPLEMENTATION REFERENCES
+
+- config/product-rules.json — configured sources and proposed product decisions.
+- worker/collector.py — source fetch and normalized fields.
+- supabase/migrations/20261002160005_extend_search_preferences.sql — active matcher.
+- supabase/migrations/20261002153003_publish_job_cards.sql — readable job projection.
+- app/src/preferences.js — saved profile values and validation.
+- app/src/main.jsx — current profile controls.
+
+This document records current behavior and proposed follow-ups. It does not
+activate new filters or claim that unverified fields are already compared.
