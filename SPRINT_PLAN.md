@@ -1,26 +1,82 @@
 # Development plan
 
-This is the active, compact replacement for the old `docs/09-sprint-plan.md`. Sprints are ordered work slices, not promised dates. Finish the listed check before expanding UI or adding paid features.
+Priority: expand job-source coverage first, then improve extraction and matching.
+UI polish, user quotas, paid tiers and billing come last. Each sprint is delivered
+in small working slices, with tests and a clean local commit after each slice.
+
+## Completed foundation
+
+| Slice | Current state |
+|---|---|
+| App and login | React app, email/password and email-link login work. |
+| Private preferences | Save/reload and account isolation verified; user confirmed browser persistence. |
+| First source | Greenhouse adapter collects Razorpay only; last verified run returned 21 jobs. |
+| Job browsing | Job cards and employer application links work; user confirmed the page. |
+| Basic matching | Saved role/location comparisons and Any choices work. Unknown-salary and eligibility policies are enforced. |
+| Additional preferences | Experience and skills are saved but not compared yet. Salary amount, employment type and work mode are also unverified. |
+
+## Phase 1 — Greenhouse: expand from Razorpay to all companies
+
+The target is all companies publishing jobs through Greenhouse, not a permanent
+shortlist of selected employers. Discovery and coverage accounting are part of
+the work: do not call coverage complete just because every known board was fetched.
 
 | Sprint | Build | Done when |
 |---|---|---|
-| 0 — Foundation | React app, Supabase client, private profile migration, simple local preview | App builds; preview and email sign-in work; live profile save remains to verify |
-| 1 — User preferences (verified) | Role, location, work mode, compensation and unknown-field choices; validation; pause setting | A signed-in user can save and reload preferences; another user cannot read or alter them |
-| 2 — Job data (first feed verified) | Source registry, one relevant employer feed, collection run outcomes, canonical job records | Repeat runs do not duplicate jobs; source failure is visible; partial runs do not close jobs |
-| 3 — Matching and shortlist | Hard eligibility checks, ranking, reasons, private shortlist, save/dismiss/applied actions | Different preferences yield explainable lists; unknowns are labelled; actions persist |
-| 4 — Delivery | Consent, verified destination, daily schedule, outbox, send-time checks, pause | At most the configured number of current jobs is sent once; pause and revoked consent stop queued sends |
-| 5 — Pilot readiness | Access, quality, recovery, cost and usability checks | Critical flows pass with real source samples and test recipients; unresolved risks are recorded |
+| 3A — Discover company boards | Find and validate employer board identifiers and career-page evidence. Maintain a registry with company, platform, board identifier, discovery source, verification date and status. Check whether a complete company inventory is available. | A reproducible discovery process and registry exist; valid, invalid, duplicate and inaccessible candidates are distinguished. The total company universe is recorded as unknown unless verified. |
+| 3B — Collect across companies | Extend the current workflow to process the registry. Start with a small validation batch, then expand through all discovered valid boards. Isolate failures, handle retries/rate limits, and preserve source identity and raw evidence. | Every discovered board has a collection outcome. Repeated runs do not duplicate postings; one board's failure does not stop others or close their jobs. Different companies can share a source job ID without collision. |
+| 3C — Keep coverage current | Add recurring discovery, scheduled collection with a scoped worker login, source health, freshness tracking and resumable runs. Add pagination/batching so storage/API defaults do not silently truncate collection or browser results. | New boards can be added without code changes; expired/renamed boards are tracked; scheduled runs recover from failure. Coverage reports list discovered, validated, collected, failed and stale boards, with outstanding gaps. |
 
-**Current progress (2026-10-02):** Sprint 1 database save/reload and two-identity access tests pass. Six preference tests and the production build pass. The user confirmed signed-in browser save/refresh works.
+Phase 1 milestone: the Greenhouse discovery-to-collection pipeline works across
+all currently discovered accessible boards, and every known gap is visible.
+Literal "all companies" remains an ongoing coverage goal unless a complete,
+current inventory can be established. Continue discovery after this milestone;
+do not block the next phase indefinitely on an unknowable total.
 
-Sprint 2's first manual collection slice is implemented and verified. The Python Greenhouse adapter imported 21 Razorpay postings twice, leaving 21 distinct records. Fourteen worker tests and the rollback-only hosted `supabase/tests/collection_access.sql` suite pass, covering repeat imports, retries, partial/failed run safety, source isolation, closure, older responses, reopening, and access boundaries. Supabase security advisors returned no findings. Source selection and operational limits are proposed values in `config/product-rules.json`.
+## Phase 2 — Expand beyond Greenhouse to other job sources and their companies
 
-**Next:** improve source coverage and evidence extraction, then refine matching and add private shortlist actions. Scheduling remains deferred until cadence/freshness decisions and a dedicated worker login are in place. Manual collection works via the existing authenticated CLI without new credentials. The optional direct-driver path is installed but has not been tested against a dedicated hosted login. See `worker/README.md` for run commands and limitations.
+The target is broad company coverage on each added platform, not one sample
+company per platform. Platform selection and order remain open until researched.
+An integration is not considered ready merely because one endpoint responds.
 
-Paid alerts, billing, extra channels, auto-apply, and UI expansion follow evidence from the first useful flow. Product values and open decisions live in [product-rules.json](config/product-rules.json).
+| Sprint | Build | Done when |
+|---|---|---|
+| 4A — Evaluate other sources | Inventory candidate recruiting platforms, job boards and employer career-page sources. Check available access methods, company discovery, field coverage, pagination, update behavior and any credentials or costs required. | Each candidate has an evidence-backed capability assessment and go/defer decision. Selected platforms and their order are recorded in product rules; unsupported access is an explicit gap. |
+| 4B — Add one platform adapter at a time | Implement and test each selected adapter against a common job format. Preserve original fields, source IDs, timestamps and missing-value information. Add a source-specific profile-field comparison document. | The adapter handles real samples, empty/partial responses, pagination and failures. Relevant collection/access tests pass before expanding its registry. |
+| 4C — Expand each platform to all company boards | Repeat the discovery, validation, collection and recurring-update workflow for every selected platform. Reuse registry, health and scheduling infrastructure. | Every discovered company board has a tracked outcome; remaining coverage gaps are explicit. Expansion is repeatable and does not require hardcoded per-company logic. |
+| 4D — Unify results across sources | Handle the same job advertised through multiple sources, preserving provenance and a preferred direct application link. Keep distinct jobs separate and distinguish source closure from closure of the underlying opportunity. | Verified duplicate examples are grouped without merging unrelated jobs. A failed or closed source does not erase a still-valid posting from another source. Results remain complete and usable as volume grows. |
 
-Jobs browsing slice: hosted job-card migration applied; authenticated REST returned 21 cards. Job-card access/lifecycle SQL checks, collection regression SQL checks, six frontend tests and build pass. The user confirmed the Jobs page works. Security advisors report only disabled leaked-password protection in Auth; no job-card findings.
+Repeat Phase 2 for additional platforms. Report coverage per platform, including
+unknown totals; do not claim every job site or every company is supported without
+evidence. Geographic or role preferences filter results, not the intended scope
+of company discovery.
 
-First matching slice: live server-side role/location matching, per-result reasons and unknown-field caveats, saved strict-policy handling, and All jobs fallback. Hosted rollback tests cover token boundaries, C++ vs C, location alternatives, empty preferences, account isolation, closure, and anonymous denial. This is a conservative baseline; extraction, aliases, seniority, relevance ranking, and automated scheduling remain unfinished. UI polish, plan quotas, and paid features remain deferred by user request.
+## Later phases — accuracy, useful actions and delivery
 
-Preference extension: Any role/location matching and persisted candidate experience/skills are implemented. Eight frontend tests, build, hosted matching and profile-isolation tests pass. Experience/skills evidence extraction remains pending and is labelled in the UI. Raw Greenhouse samples are saved locally under ignored `tmp/api-samples/` for filter planning.
+| Sprint | Build | Done when |
+|---|---|---|
+| 5 — Comparable job facts | Extract explicit experience, required/preferred skills, salary/currency/period, work mode and employment type. Resolve location conflicts; keep evidence and confidence. Clearly label inactive filters in the meantime. | Each active profile filter compares real, compatible facts; missing values remain unknown. Source-specific tests cover conflicting and ambiguous evidence. |
+| 6 — Matching quality and shortlist | Improve role/location aliases, hard constraints and explainable ranking; add save/dismiss/applied actions. Evaluate against reviewed job samples. | Relevant and unsuitable cases behave as expected; no invented match claims; private actions persist and remain isolated by account. |
+| 7 — Notifications and pilot reliability | Add consent, verified destinations, outbox, scheduling, freshness checks, deduplication, pause and recovery. | Only eligible current undelivered jobs are sent; consent and pause stop queued sends; delivery can recover without duplicates. |
+| 8 — UI polish and paid features | Improve presentation after core flows work; then design user quotas, entitlements and billing. | Functional and quality checks pass first; any paid limits and business values are explicitly agreed and stored in product rules. |
+
+## Checks throughout expansion
+
+- Keep browser access read-only for jobs; isolate private profiles and operator data.
+- Partial/failed collection must never close missing postings.
+- Preserve original source evidence; never turn unknown salary or eligibility into a confirmed fact.
+- Operational timeouts, retry policies and request pacing are reliability controls,
+  not user-plan quotas. Proposed values belong in config/product-rules.json.
+- Maintain source/filter coverage documentation as each adapter is added.
+- Run the build and relevant tests before each development commit; record any
+  unverified browser or hosted behavior.
+
+Current verification baseline: eight frontend tests and build pass; hosted tests
+cover profile isolation, collection lifecycle, job-card access and basic matching.
+The latest new preference controls still need browser verification. Security
+advisors reported disabled leaked-password protection in Auth; no source-table
+or matching access findings were reported in the last checks.
+
+**Next development slice: Sprint 3A — Greenhouse company-board discovery and registry.**
+This plan changes priorities; it does not mean new companies or platforms have
+already been connected. The configured source remains Razorpay until implemented.

@@ -65,6 +65,9 @@
     "source_run_cadence_minutes": { "value": null, "status": "open" }
   },
   "collection": {
+    "expansion_order": { "value": ["greenhouse_all_companies", "other_platforms_all_companies"], "status": "requirement" },
+    "coverage_target": { "value": "all_companies_per_platform; track_discovery_gaps_and_unknown_totals", "status": "requirement" },
+    "additional_platforms": { "value": null, "status": "open" },
     "sources": {
       "value": [
         {
