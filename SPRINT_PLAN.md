@@ -11,6 +11,6 @@ This is the active, compact replacement for the old `docs/09-sprint-plan.md`. Sp
 | 4 — Delivery | Consent, verified destination, daily schedule, outbox, send-time checks, pause | At most the configured number of current jobs is sent once; pause and revoked consent stop queued sends |
 | 5 — Pilot readiness | Access, quality, recovery, cost and usability checks | Critical flows pass with real source samples and test recipients; unresolved risks are recorded |
 
-**Current focus:** finish Sprint 0 with a real Supabase project, then implement Sprint 1. I can develop local code, migrations, fixtures, and tests while external setup is pending. I cannot verify hosted authentication or apply a migration to your project until it is connected.
+**Current focus:** finish Sprint 0 by verifying email sign-in with a test inbox, then implement Sprint 1. The Supabase project and profile migration are connected. I can continue local code and database work while inbox verification is pending.
 
 Paid alerts, billing, extra channels, auto-apply, and UI expansion follow evidence from the first useful flow. Product values and open decisions live in [product-rules.json](config/product-rules.json).

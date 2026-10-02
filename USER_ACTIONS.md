@@ -1,11 +1,11 @@
-# Your one-time setup
+# What you need to do
 
-Do these steps once so I can continue the connected build without repeated setup questions:
+I created the **Role Ping** Supabase project in the `inavis` organization (Mumbai), applied the profile migration, and configured the local app with its publishable key. You do not need to create a project, copy keys, or run SQL.
 
-1. Create a Supabase project in your account.
-2. In Supabase Auth, enable email sign-in and allow `http://127.0.0.1:5173/` as a redirect URL.
-3. Copy `app/.env.example` to `app/.env.local`. Fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from the project dashboard. This file is ignored by Git. Never put a service-role key, secret key, database password, or personal access token in it.
-4. Run `supabase/migrations/20261002100152_create_profiles.sql` in the Supabase SQL Editor. Use your own email to test sign-in; no password needs to be shared.
-5. Tell me **“Supabase setup done”**. If any step fails, send the error text without credentials.
+To finish testing email sign-in:
 
-After that I can verify the connected profile flow and build the next slices in [SPRINT_PLAN.md](SPRINT_PLAN.md). I will ask for a decision only when a later external dependency actually needs one, such as a notification provider or consent wording. Those choices do not block current development.
+1. In the [Role Ping Auth URL settings](https://supabase.com/dashboard/project/bqsjlmftpxawctenzvja/auth/url-configuration), add `http://127.0.0.1:5173/` to the redirect URL allow list. Check that email sign-in is enabled in Auth providers.
+2. Open [the local app](http://127.0.0.1:5173/), enter your own email, and follow the sign-in link. Keep your email link and codes private.
+3. Tell me **“Sign-in works”** or send the error text without the link or code.
+
+I can build the next local features while you do this. I can verify the database policies and schema through the connected Supabase plugin; end-to-end email sign-in needs a test inbox. Later notification delivery will require a provider account and consent wording, after the matching flow works.
