@@ -1,7 +1,7 @@
 # Development and Git rules
 
 - Build one small working feature at a time. Keep UI simple until core flows work.
-- Read `TECH_STACK.md`, `PRODUCT.md`, and `config/product-rules.json` before changing behavior.
+- Read `TECH_STACK.md`, `PRODUCT.md`, `SPRINT_PLAN.md`, and `config/product-rules.json` before changing behavior.
 - Store changeable product values in `config/product-rules.json`; label proposals and unresolved values.
 - Never commit secrets. Browser code gets only the Supabase publishable key. Enforce ownership in database policies.
 - Add a new migration for schema changes after a migration has been applied.

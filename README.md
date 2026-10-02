@@ -14,6 +14,7 @@ Open the URL printed by Vite, usually [http://127.0.0.1:5173/](http://127.0.0.1:
 
 ## Key files
 
+- [Development plan](SPRINT_PLAN.md)
 - [What you need to do](USER_ACTIONS.md)
 - [Tech stack](TECH_STACK.md)
 - [Product brief](PRODUCT.md)
