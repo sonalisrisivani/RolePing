@@ -1,0 +1,119 @@
+ROLEPING — SIMPLE SOURCE AND FILTER SUMMARY
+As of: 2 October 2026
+
+TOTAL JOB SOURCES USING FOR NOW: 1
+
+Names of the sources:
+1. Greenhouse (Razorpay jobs only)
+
+Important:
+- Greenhouse is the platform. Razorpay is the employer we fetch from it.
+- one-job.json is one sample job from Greenhouse, NOT another site.
+- greenhouse-response.json contains the full response from that same source.
+
+
+FIELDS IN THE PROFILE SECTION
+
+1. Role — specific roles or Any
+2. Location — specific locations or Any
+3. Your years of experience
+4. Skills — specific skills or Any
+5. Role type — Full-time, Internship or Any
+6. Work mode — Remote, Hybrid, On-site or Any
+7. Minimum salary
+8. Salary currency
+9. Salary period — year, month or hour
+10. What to do when salary is unknown
+11. What to do when eligibility is unconfirmed
+
+Other profile fields, NOT job filters:
+- Your name
+- Daily digest time
+- Timezone
+- Pause notifications (delivery is not active yet)
+
+
+SOURCE COMPARED WITH PROFILE FIELDS
+
+GREENHOUSE (RAZORPAY ONLY)
+
+1. Role: YES — compared with the job title.
+   Any skips the role filter. Synonyms and descriptions are not checked yet.
+
+2. Location: YES — compared with the main job location text.
+   Any skips the location filter. City aliases and conflicting locations
+   are not resolved yet.
+
+3. Your years of experience: NO — saved only.
+   The response has no dedicated experience field. Description extraction
+   is not implemented yet.
+
+4. Skills: NO — saved only, including the Any choice.
+   The response has no dedicated skills list. Description extraction
+   is not implemented yet.
+
+5. Role type: NO — saved only.
+   Full-time versus internship is not verified from the source.
+
+6. Work mode: NO — saved only.
+   Remote, hybrid and on-site requirements are not verified.
+
+7. Minimum salary: NO — saved only.
+   There is no dedicated salary field in our sample, and we do not yet
+   extract salary from descriptions.
+
+8. Salary currency: NO — no extracted job salary to compare.
+
+9. Salary period: NO — no extracted job salary to compare.
+
+10. Unknown salary choice: WORKS AS A POLICY, not a salary comparison.
+    Show with a caveat = allow jobs with unknown salary.
+    Exclude = remove jobs with unknown salary.
+    All current jobs are treated as salary unknown.
+
+11. Unconfirmed eligibility choice: WORKS AS A POLICY, not verification.
+    Show with a caveat = allow jobs with unconfirmed eligibility.
+    Confirmed only = remove all current jobs because we do not yet
+    verify their eligibility requirements.
+
+These rules apply to Matching jobs. All jobs does not use profile filters.
+Both tabs hide closed jobs and jobs from disabled sources.
+
+
+EXTRA SOURCE FIELDS AVAILABLE FOR POSSIBLE FUTURE FILTERS
+
+Available but NOT used as profile filters yet:
+1. Company name
+2. Department (e.g. Engineering, Finance, Sales)
+3. Business unit / office label (not necessarily a physical location)
+4. First publication date
+5. Last source update date
+6. Posting language (not a language proficiency requirement)
+7. Extra location metadata (can conflict with the main location)
+8. Job description (possible evidence for skills, experience and salary)
+
+Present as a key but empty in all 21 sampled jobs:
+- Application deadline
+
+Missing as dedicated fields in this sample:
+- Salary amount, currency and pay period
+- Required years of experience
+- Required skills
+- Verified work mode and usable employment type
+- Degree, graduation batch and work-authorization requirements
+
+Some missing details may be written in job descriptions. We have not
+implemented extraction, so they must not be treated as verified filters.
+This describes our Razorpay sample, not every employer using Greenhouse.
+
+
+WHAT REALLY FILTERS JOBS TODAY?
+
+Role + location + your choices about unknown salary/eligibility.
+
+Salary amounts, experience, skills, role type and work mode are saved,
+but are NOT compared yet. They should be clearly labelled as inactive
+filters until comparison is implemented.
+
+The detailed file remains unchanged:
+docs/source-filter-coverage.txt
