@@ -2,6 +2,8 @@
 
 Sequence is dependency-based. Dates, staffing, budget, and implementation estimates remain open.
 
+See the [proposed sprint plan](09-sprint-plan.md) for an execution breakdown with explicit capacity assumptions, work packages, and acceptance checks. Its estimates are provisional and do not commit a launch date.
+
 ## Milestones
 
 | Milestone | Deliverable | Exit criteria |

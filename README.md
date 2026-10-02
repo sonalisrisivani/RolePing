@@ -18,6 +18,7 @@ Students provide their profile and preferences; Role Ping finds, checks, and ran
 6. [Launch, measurement, and testing](docs/06-launch-and-validation.md) — college pilot, product metrics, quality benchmark, and test plan.
 7. [Roadmap and future enhancements](docs/07-roadmap.md) — dependency-based milestones and deferred features.
 8. [Decisions, risks, and open questions](docs/08-decisions-and-risks.md) — what came from the user, what is recommended, and what remains unresolved.
+9. [Directory review and sprint plan](docs/09-sprint-plan.md) — proposed capacity, sprint backlog, dependencies, acceptance checks, and pilot gates.
 
 ## Recommended MVP
 
