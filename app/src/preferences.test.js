@@ -42,3 +42,27 @@ test('rejects unsupported choices restored from local storage', () => {
   assert.match(validatePreferences({ ...ready, salary_floor: 100, salary_currency: 'INR', salary_period: 'week' }), /salary period/)
   assert.match(validatePreferences({ ...ready, salary_floor: 100, salary_currency: 'rupees', salary_period: 'year' }), /currency/)
 })
+
+test('Any choices and fractional experience survive a save/load round trip', () => {
+  const input = { ...ready, target_role: 'Any', location: 'any', skills: 'any', years_experience: '2.5' }
+  assert.equal(validatePreferences(input), null)
+  const saved = profileRecord(input, 'user-1')
+  assert.equal(saved.years_experience, 2.5)
+  assert.equal(readPreferences(saved).skills, 'any')
+  assert.equal(profileRecord({ ...input, years_experience: 0 }, 'user-1').years_experience, 0)
+  assert.equal(profileRecord({ ...input, years_experience: '' }, 'user-1').years_experience, null)
+  assert.equal(readPreferences({}).years_experience, null)
+  assert.equal(readPreferences({}).skills, 'any')
+})
+
+test('invalid experience and ambiguous Any lists are rejected', () => {
+  for (const years_experience of [-1, 'abc', Infinity]) {
+    assert.match(validatePreferences({ ...ready, years_experience }), /experience/)
+  }
+  for (const field of ['target_role', 'location', 'skills']) {
+    assert.ok(validatePreferences({ ...ready, [field]: 'any, React' }))
+    assert.ok(validatePreferences({ ...ready, [field]: 'React,' }))
+  }
+  assert.ok(validatePreferences({ ...ready, skills: '' }))
+  assert.equal(validatePreferences({ ...ready, skills: 'React, C++, SQL', years_experience: 0 }), null)
+})

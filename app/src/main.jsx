@@ -43,7 +43,7 @@ function App() {
     let active = true
     setProfileLoading(true)
     supabase.from('profiles')
-      .select('full_name,target_role,location,role_type,work_mode,salary_floor,salary_currency,salary_period,unknown_salary_policy,eligibility_policy,digest_time,timezone,paused')
+      .select('full_name,target_role,location,years_experience,skills,role_type,work_mode,salary_floor,salary_currency,salary_period,unknown_salary_policy,eligibility_policy,digest_time,timezone,paused')
       .eq('user_id', session.user.id).maybeSingle().then(({ data, error }) => {
         if (!active) return
         if (data) setProfile(readPreferences(data))
@@ -130,8 +130,10 @@ function App() {
         {profileLoading ? <p>Loading your settings…</p> : <section className="card"><form onSubmit={save}>
           <h2>Search</h2><div className="grid">
             <label>Your name<input maxLength="120" value={profile.full_name} onChange={e => setField('full_name', e.target.value)} placeholder="Your name"/></label>
-            <label>Target roles<input maxLength="300" value={profile.target_role} onChange={e => setField('target_role', e.target.value)} placeholder="e.g. Frontend engineer"/></label>
-            <label>Preferred locations<input maxLength="300" value={profile.location} onChange={e => setField('location', e.target.value)} placeholder="e.g. Bengaluru, Remote"/></label>
+            <label>Target roles<select aria-label="Role preference" value={profile.target_role.trim().toLowerCase() === 'any' ? 'any' : 'specific'} onChange={e => setField('target_role', e.target.value === 'any' ? 'any' : '')}><option value="any">Any role</option><option value="specific">Specific roles</option></select>{profile.target_role.trim().toLowerCase() !== 'any' && <input aria-label="Specific roles" maxLength="300" value={profile.target_role} onChange={e => setField('target_role', e.target.value)} placeholder="e.g. Frontend engineer, Developer"/>}</label>
+            <label>Preferred locations<select aria-label="Location preference" value={profile.location.trim().toLowerCase() === 'any' ? 'any' : 'specific'} onChange={e => setField('location', e.target.value === 'any' ? 'any' : '')}><option value="any">Any location</option><option value="specific">Specific locations</option></select>{profile.location.trim().toLowerCase() !== 'any' && <input aria-label="Specific locations" maxLength="300" value={profile.location} onChange={e => setField('location', e.target.value)} placeholder="e.g. Bengaluru, Remote"/>}</label>
+            <label>Your years of experience<input type="number" min="0" step="any" value={profile.years_experience ?? ''} onChange={e => setField('years_experience', e.target.value === '' ? null : e.target.value)} placeholder="e.g. 0 or 2.5"/><small>Optional. Experience requirements are not yet verified.</small></label>
+            <label>Skills<select aria-label="Skill preference" value={profile.skills.trim().toLowerCase() === 'any' ? 'any' : 'specific'} onChange={e => setField('skills', e.target.value === 'any' ? 'any' : '')}><option value="any">Any skills</option><option value="specific">My skills</option></select>{profile.skills.trim().toLowerCase() !== 'any' && <input aria-label="Your skills" maxLength="1000" value={profile.skills} onChange={e => setField('skills', e.target.value)} placeholder="e.g. React, JavaScript, SQL"/>}<small>Saved for matching. Job skill requirements are not yet verified.</small></label>
             <label>Role type<select value={profile.role_type} onChange={e => setField('role_type', e.target.value)}><option value="any">Any</option><option value="full_time">Full-time</option><option value="internship">Internship</option></select></label>
             <label>Work mode<select value={profile.work_mode} onChange={e => setField('work_mode', e.target.value)}><option value="any">Any</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label>
           </div>

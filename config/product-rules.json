@@ -50,6 +50,9 @@
     }
   },
   "matching": {
+    "any_preference": { "value": "any", "status": "requirement" },
+    "experience_input": { "value": "candidate_years; null_unspecified; zero_no_experience", "status": "requirement" },
+    "skill_experience_matching": { "value": "store_preferences_and_label_unverified_until_evidence_extraction", "status": "proposed" },
     "initial_method": { "value": "all_role_terms_in_title_and_location_phrase; comma_separated_alternatives; newest_observation_first", "status": "proposed" },
     "unverified_fields": { "value": "honor_saved_unknown_salary_and_eligibility_policies; label_other_unverified_preferences", "status": "proposed" },
     "unknown_salary_default": { "value": null, "status": "open" },

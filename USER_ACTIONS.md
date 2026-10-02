@@ -17,3 +17,5 @@ The sign-in screen now accepts an email and password as well as email links. A s
 ## Browse collected jobs
 
 Refresh the local app and choose **Jobs** after signing in. The page lists collected postings and links to the employer application pages. Preference matching comes in the next slice.
+
+Preferences now include Any role, Any location, your years of experience, and skills with Any. Save before returning to Jobs. Experience/skills are recorded but do not filter results yet; requirements extraction is pending. Source API samples: `tmp/api-samples/greenhouse-response.json` (full response) and `tmp/api-samples/one-job.json` (one complete job).
