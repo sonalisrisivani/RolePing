@@ -1,7 +1,0 @@
-tool,source,successful_nonempty_searches,searches,returned_records,median_wall_seconds,descriptions,dated_records,fresher_plausible,structured_salary_records
-python,indeed,2,2,9,8.36,9,9,5,1
-python,naukri,2,2,16,2.39,16,9,11,4
-python,linkedin,2,2,20,11.05,20,20,18,1
-ts,indeed,2,2,9,0.7,9,9,5,0
-ts,naukri,0,2,0,0.5,0,0,0,0
-ts,linkedin,2,2,20,31.07,20,20,18,0

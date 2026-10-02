@@ -1,3 +1,0 @@
-tool,records,successful_searches,attempts,retrieval_score,field_presence_score,fresher_suitability_score,speed_score,median_success_wall_seconds,overall
-python,45,6,6,10.0,9.74,7.56,6,6.75,8.68
-ts,29,4,6,6.67,10.0,7.93,4,15.31,7.68

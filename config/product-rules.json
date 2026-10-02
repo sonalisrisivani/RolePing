@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "purpose": "Planning values only; no application loads this file yet",
+  "notifications": {
+    "daily_digest": {
+      "enabled": { "value": true, "status": "proposed" },
+      "max_jobs_per_digest": { "value": 5, "status": "proposed" },
+      "send_time_local": { "value": "07:00", "status": "proposed" },
+      "timezone": { "value": "user_selected_iana_timezone", "status": "proposed" },
+      "initial_timezone_suggestion": { "value": "Asia/Kolkata", "status": "proposed" },
+      "send_when_no_jobs": { "value": false, "status": "proposed" },
+      "pad_with_old_or_ineligible_jobs": { "value": false, "status": "requirement" },
+      "missed_slot_grace_minutes": { "value": null, "status": "open" }
+    },
+    "faster_paid_alerts": {
+      "enabled": { "value": false, "status": "deferred" },
+      "minimum_delay_minutes": { "value": null, "status": "open" },
+      "max_alerts_per_day": { "value": null, "status": "open" },
+      "quiet_hours": { "value": null, "status": "open" }
+    }
+  },
+  "access": {
+    "user": {
+      "own_profile_preferences_settings_actions": "read_write",
+      "own_matches": "read",
+      "public_job_cards": "read",
+      "other_users_data": "deny",
+      "entitlements_and_delivery_state": "deny_write",
+      "source_records_and_operator_logs": "deny"
+    },
+    "operator": {
+      "source_registry_health_and_review_queue": "read_write",
+      "user_private_data": "deny_by_default",
+      "test_entitlements": "controlled_server_action_only"
+    },
+    "collection_worker": {
+      "source_records_and_canonical_jobs": "scoped_read_write",
+      "user_private_data": "deny_unless_required_for_job"
+    },
+    "delivery_worker": {
+      "due_deliveries_and_required_match_data": "scoped_read_write",
+      "billing_entitlements": "read_only"
+    },
+    "verified_billing_process": {
+      "entitlements": "write_after_verified_event"
+    },
+    "anonymous": {
+      "user_private_data": "deny",
+      "public_job_cards": "read_if_published"
+    }
+  },
+  "matching": {
+    "unknown_salary_default": { "value": null, "status": "open" },
+    "unknown_degree_or_batch_default": { "value": null, "status": "open" },
+    "strict_confirmed_eligibility_option": { "value": true, "status": "proposed" }
+  },
+  "operations": {
+    "job_evidence_max_age_hours": { "value": null, "status": "open" },
+    "personal_data_retention_days": { "value": null, "status": "open" },
+    "source_run_cadence_minutes": { "value": null, "status": "open" }
+  }
+}
