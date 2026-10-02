@@ -2,7 +2,8 @@
 
 - Frontend: React + Vite, JavaScript, plain CSS.
 - Identity and data: Supabase Auth + Postgres with row-level security.
-- Job collection and matching: Python worker, later slice.
+- Job collection: Python worker with a Greenhouse adapter; private Postgres collection tables. Manual runs use the authenticated Supabase CLI; a scoped database-login path is prepared for later scheduling.
+- Matching: later Python worker slice.
 - Notifications: scheduled worker and delivery provider, later slice.
 
 Keep user-facing operations in the frontend. Privileged collection, matching, delivery, and billing stay server-side. Add infrastructure only when a working feature needs it.

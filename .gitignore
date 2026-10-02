@@ -34,3 +34,6 @@ coverage/
 work/
 tmp/
 *.log
+
+# Supabase CLI generated project cache
+supabase/.temp/

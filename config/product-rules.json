@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "purpose": "Planning values only; no application loads this file yet",
+  "purpose": "Product decisions and worker configuration; proposed values remain provisional.",
   "notifications": {
     "daily_digest": {
       "enabled": { "value": true, "status": "proposed" },
@@ -58,5 +58,22 @@
     "job_evidence_max_age_hours": { "value": null, "status": "open" },
     "personal_data_retention_days": { "value": null, "status": "open" },
     "source_run_cadence_minutes": { "value": null, "status": "open" }
+  },
+  "collection": {
+    "sources": {
+      "value": [
+        {
+          "slug": "razorpay",
+          "employer": "Razorpay",
+          "adapter": "greenhouse",
+          "board_token": "razorpaysoftwareprivatelimited"
+        }
+      ],
+      "status": "proposed"
+    },
+    "http_timeout_seconds": { "value": 30, "status": "proposed" },
+    "max_response_bytes": { "value": 10000000, "status": "proposed" },
+    "empty_feed_policy": { "value": "partial_requires_review", "status": "proposed" },
+    "close_missing_only_on_complete_response": { "value": true, "status": "requirement" }
   }
 }
