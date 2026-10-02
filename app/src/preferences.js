@@ -14,10 +14,17 @@ export function validatePreferences(value) {
   if (!value.location.trim()) return 'Enter at least one preferred location.'
   if (!value.unknown_salary_policy) return 'Choose how to handle jobs without salary information.'
   if (!value.eligibility_policy) return 'Choose how to handle unconfirmed eligibility.'
+  if (!['any', 'full_time', 'internship'].includes(value.role_type)) return 'Choose a valid role type.'
+  if (!['any', 'remote', 'hybrid', 'onsite'].includes(value.work_mode)) return 'Choose a valid work mode.'
+  if (!['include_with_caveat', 'exclude'].includes(value.unknown_salary_policy)) return 'Choose a valid salary policy.'
+  if (!['include_with_caveat', 'confirmed_only'].includes(value.eligibility_policy)) return 'Choose a valid eligibility policy.'
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value.digest_time)) return 'Choose a valid daily digest time.'
   if (value.salary_floor !== null && value.salary_floor !== '') {
     const amount = Number(value.salary_floor)
     if (!Number.isFinite(amount) || amount < 0) return 'Enter a valid salary floor of zero or more.'
     if (!value.salary_currency || !value.salary_period) return 'Choose a currency and period for your salary floor.'
+    if (!/^[A-Z]{3}$/.test(value.salary_currency)) return 'Choose a valid currency.'
+    if (!['year', 'month', 'hour'].includes(value.salary_period)) return 'Choose a valid salary period.'
   }
   try { new Intl.DateTimeFormat('en', { timeZone: value.timezone }) }
   catch { return 'Enter a valid IANA timezone, such as Asia/Kolkata.' }

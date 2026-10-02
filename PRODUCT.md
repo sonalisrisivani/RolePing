@@ -20,4 +20,4 @@ Role Ping helps users find relevant jobs and internships, check important eligib
 
 The proposed digest contains up to five jobs around 07:00 in the user's selected IANA timezone. Changeable and unresolved values are in [product-rules.json](config/product-rules.json). Paid faster alerts are deferred until source quality and delivery reliability are measured.
 
-The current build implements email sign-in, a profile and preference form, and private Supabase profile storage. Hosted preference save/reload and cross-account access still need end-to-end verification. Job collection, matching, delivery, operator tools, and billing remain to be built.
+The current build implements email sign-in, a profile and preference form, and private Supabase profile storage. Hosted database preference save/reload and cross-account isolation checks pass; signed-in browser save/refresh still needs end-to-end verification. Job collection, matching, delivery, operator tools, and billing remain to be built.

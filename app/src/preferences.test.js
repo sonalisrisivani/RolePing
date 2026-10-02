@@ -25,3 +25,20 @@ test('serializes salary floor without stale units', () => {
 test('loads database time into the browser time input', () => {
   assert.equal(readPreferences({ digest_time: '07:00:00' }).digest_time, '07:00')
 })
+
+test('rejects empty and malformed delivery times before saving', () => {
+  for (const digest_time of ['', '24:00', '07:60', '7:00']) {
+    assert.match(validatePreferences({ ...ready, digest_time }), /digest time/)
+  }
+  for (const digest_time of ['00:00', '07:00', '23:59']) {
+    assert.equal(validatePreferences({ ...ready, digest_time }), null)
+  }
+})
+
+test('rejects unsupported choices restored from local storage', () => {
+  for (const field of ['role_type', 'work_mode', 'unknown_salary_policy', 'eligibility_policy']) {
+    assert.ok(validatePreferences({ ...ready, [field]: 'invalid' }))
+  }
+  assert.match(validatePreferences({ ...ready, salary_floor: 100, salary_currency: 'INR', salary_period: 'week' }), /salary period/)
+  assert.match(validatePreferences({ ...ready, salary_floor: 100, salary_currency: 'rupees', salary_period: 'year' }), /currency/)
+})

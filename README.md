@@ -22,3 +22,7 @@ Open the URL printed by Vite, usually [http://127.0.0.1:5173/](http://127.0.0.1:
 - [Development and Git rules](AGENTS.md)
 
 The older planning documents and benchmark evidence remain recoverable from Git history.
+
+## Verify preferences
+
+Run `npm test` and `npm run build` in `app`. Run `supabase/tests/profile_access.sql` as an administrator against the project's database to exercise authenticated ownership rules and preference persistence. The SQL suite raises on failure and rolls back all fixtures on success; it does not send email or create permanent accounts. It verifies database roles, not the browser sign-in flow.

@@ -11,6 +11,6 @@ This is the active, compact replacement for the old `docs/09-sprint-plan.md`. Sp
 | 4 — Delivery | Consent, verified destination, daily schedule, outbox, send-time checks, pause | At most the configured number of current jobs is sent once; pause and revoked consent stop queued sends |
 | 5 — Pilot readiness | Access, quality, recovery, cost and usability checks | Critical flows pass with real source samples and test recipients; unresolved risks are recorded |
 
-**Current focus:** implement and verify Sprint 1. Email sign-in worked on the second try; the first failure needs observation if it recurs. The preference schema and local form are in place. Hosted save/reload and a two-account access check remain to verify.
+**Current focus:** implement and verify Sprint 1. Email sign-in worked on the second try; the first failure needs observation if it recurs. The preference schema and local form are in place. Hosted database save/reload, two-identity row-level isolation, ownership reassignment denial, and anonymous access denial passed on 2026-10-02 using the rollback-only `supabase/tests/profile_access.sql` suite. Six local validation tests and the production build pass. Signed-in browser save/refresh remains to verify end to end; database-role tests do not verify Auth token issuance or the browser integration.
 
 Paid alerts, billing, extra channels, auto-apply, and UI expansion follow evidence from the first useful flow. Product values and open decisions live in [product-rules.json](config/product-rules.json).
