@@ -1,0 +1,4 @@
+tool,successful_fetches,attempts,identical_payloads,median_wall_seconds,retrieval_score,payload_preservation_score,speed_score,overall
+requests,6,6,6,0.894,10.0,10.0,10,10.0
+scrapy,6,6,6,2.112,10.0,10.0,8,9.6
+crawlee,6,6,6,2.221,10.0,10.0,8,9.6

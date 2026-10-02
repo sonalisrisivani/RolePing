@@ -1,0 +1,7 @@
+{
+  "python-jobspy": "1.2.0",
+  "scrapy": "2.19.0",
+  "requests": "2.34.2",
+  "ts-jobspy": "3.0.1",
+  "crawlee": "3.18.2"
+}
