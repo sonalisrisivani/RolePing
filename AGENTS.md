@@ -6,5 +6,5 @@
 - Never commit secrets. Browser code gets only the Supabase publishable key. Enforce ownership in database policies.
 - Add a new migration for schema changes after a migration has been applied.
 - Run the build and relevant tests before committing. Report what could not be verified.
-- Make focused commits with short imperative subjects, such as `feat: save user settings`.
+- Make a clean local Git commit after each completed development slice. Stage only files for that slice, verify the staged diff, and use a short imperative subject such as `feat: save user settings`.
 - Do not commit generated files or unrelated changes. Do not force-push or rewrite shared history.
